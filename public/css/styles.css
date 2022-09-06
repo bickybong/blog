@@ -2,6 +2,7 @@
   padding-top: 70px;
   padding-bottom: 70px;
 }
+
 .navbar {
   padding-top: 15px;
   padding-bottom: 15px;
@@ -10,29 +11,42 @@
   margin-bottom: 0;
   font-size: 12px;
   letter-spacing: 5px;
-  background-color: #ECCCB2;
+  background-color: #ecccb2;
 }
+
 .navbar-nav li a:hover {
   color: #1abc9c !important;
 }
 
-body{
-  background-color: #F5E8C7;
+body {
+  background-color: #f5e8c7;
+  position: relative;
+  min-height: 100vh;
+  font-family: "Ubuntu", sans-serif;
 }
 
+h1 {
+  font-family: "Montserrat", sans-serif;
+}
+body::after {
+  content: "";
+  display: block;
+  height: 60px; /* Set same as footer's height */
+}
 .footer-padding {
   padding-bottom: 60px;
 }
 
 .footer {
-  position: relative;
+  position: absolute;
+  margin-top: auto;
   display: flex;
   align-content: center;
   justify-content: center;
   bottom: 0;
   width: 100%;
   height: 60px;
-  background-color: #DEB6AB;
+  background-color: #deb6ab;
 }
 
 .footer p {
@@ -41,7 +55,7 @@ body{
   color: ;
 }
 
-.delete{
+.delete {
   background-color: #1abc9c;
   color: white;
   border: 0;
