@@ -1,9 +1,16 @@
-//jshint esversion:6
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const _ = require("lodash");
+const mongoose = require("mongoose");
+//mongoose code
+mongoose.connect("mongodb+srv://bickybong:test123@cluster0.bnspu6g.mongodb.net/blogDB");
+const blogSchema = new mongoose.Schema({
+  title: String,
+  body: String,
+});
+
+const Blog = mongoose.model("Blog", blogSchema);
 
 const homeStartingContent =
   "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
@@ -19,12 +26,19 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-const posts = [];
-
 app.get("/", function (req, res) {
-  res.render("home", {
-    homePara: aboutContent,
-    posts: posts
+  blogPosts = Blog.find(function (err, posts) {
+    //finds the fruits
+    if (err) {
+      //if there is error
+      console.log(err);
+    } else {
+      //no error
+        res.render("home", {
+          homePara: aboutContent,
+          posts: posts,
+        });;
+    }
   });
 });
 
@@ -41,24 +55,39 @@ app.get("/compose", function (req, res) {
 });
 
 app.post("/compose", function (req, res) {
-  const post = {
+  const post = new Blog({
     title: req.body.composeTitle,
     body: req.body.composePost,
-  };
-  posts.push(post);
-  res.redirect("/");
+  });
+  post.save(function(err){
+    if(!err){
+      res.redirect("/");
+    }
+  });
 });
 
-app.get("/post/:id", function (req, res) {
+app.get("/:id", function (req, res) {
   const webId = _.kebabCase(req.params.id);
+  blogPosts = Blog.find(function (err, posts) {
+    //finds the fruits
+    if (err) {
+      //if there is error
+      console.log(err);
+    } else {
   posts.forEach(function (post) {
     //loop through posts
     const title = _.kebabCase(post.title);
     if (title === webId) {
       res.render("post", { post: post });
-    };
+    }})}
   });
 });
+
+app.post("/delete", function(req, res){
+  const postID = req.body.deleteButton;
+  Blog.findByIdAndDelete(postID, function(err){});
+  res.redirect("/");
+})
 
 app.listen(process.env.PORT || 3000, function () {
   console.log("Server started on port 3000");
