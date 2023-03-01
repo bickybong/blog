@@ -4,7 +4,10 @@ const ejs = require("ejs");
 const _ = require("lodash");
 const mongoose = require("mongoose");
 //mongoose code
-mongoose.connect("mongodb+srv://bickybong:test123@cluster0.bnspu6g.mongodb.net/blogDB");
+mongoose.connect(
+  "mongodb+srv://bickybong:test123@cluster0.6bqohup.mongodb.net/?retryWrites=true&w=majority"
+);
+// mongoose.connect("mongodb+srv://bickybong:test123@cluster0.bnspu6g.mongodb.net/blogDB");
 const blogSchema = new mongoose.Schema({
   title: String,
   body: String,
@@ -34,10 +37,10 @@ app.get("/", function (req, res) {
       console.log(err);
     } else {
       //no error
-        res.render("home", {
-          homePara: aboutContent,
-          posts: posts,
-        });;
+      res.render("home", {
+        homePara: aboutContent,
+        posts: posts,
+      });
     }
   });
 });
@@ -59,8 +62,8 @@ app.post("/compose", function (req, res) {
     title: req.body.composeTitle,
     body: req.body.composePost,
   });
-  post.save(function(err){
-    if(!err){
+  post.save(function (err) {
+    if (!err) {
       res.redirect("/");
     }
   });
@@ -74,20 +77,22 @@ app.get("/:id", function (req, res) {
       //if there is error
       console.log(err);
     } else {
-  posts.forEach(function (post) {
-    //loop through posts
-    const title = _.kebabCase(post.title);
-    if (title === webId) {
-      res.render("post", { post: post });
-    }})}
+      posts.forEach(function (post) {
+        //loop through posts
+        const title = _.kebabCase(post.title);
+        if (title === webId) {
+          res.render("post", { post: post });
+        }
+      });
+    }
   });
 });
 
-app.post("/delete", function(req, res){
+app.post("/delete", function (req, res) {
   const postID = req.body.deleteButton;
-  Blog.findByIdAndDelete(postID, function(err){});
+  Blog.findByIdAndDelete(postID, function (err) {});
   res.redirect("/");
-})
+});
 
 app.listen(process.env.PORT || 3000, function () {
   console.log("Server started on port 3000");
